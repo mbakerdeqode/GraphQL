@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
+import {
+  GraphQLFederationModule,
+  GraphQLGatewayModule,
+  GraphQLModule,
+} from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
@@ -11,8 +15,19 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     BooksModule,
-    GraphQLModule.forRoot({
+    GraphQLFederationModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
+    GraphQLGatewayModule.forRoot({
+      server: {
+        cors: true,
+      },
+      gateway: {
+        serviceList: [
+          { name: 'users', url: 'https://localhost:3000/graphql' },
+          { name: 'books', url: 'https://localhost:3001/graphql' },
+        ],
+      },
     }),
     TypeOrmModule.forRoot({
       keepConnectionAlive: true,
