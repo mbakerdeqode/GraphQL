@@ -23,4 +23,7 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+  findbyID(id: string) {
+    return `This action returns a user by #${id}`;
+  }
 }
